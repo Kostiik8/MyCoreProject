@@ -5,7 +5,9 @@ from src.main import Category, Product
 
 @pytest.fixture
 def test_category():
-    return Category("Фрукты", "Различные свежие фрукты", ["Банан", "Груша", "Груша"])
+    category1 = Category("Фрукты", "Различные свежие фрукты", ["Банан", "Груша", "Груша"])
+    category2 = Category("Овощи", "Различные свежие овощи", ["Морковь", "Капуста"])
+    return category1
 
 
 def test_init(test_category):
@@ -13,7 +15,7 @@ def test_init(test_category):
     assert test_category.description == "Различные свежие фрукты"
     assert test_category.products == {"Банан", "Груша"}
     assert test_category.unique_products == 2
-    assert test_category.total_amount_category == 1
+    assert Category.total_amount_category == 2
 
 
 @pytest.fixture
