@@ -3,7 +3,7 @@ class Category:
 
     total_amount_category = 0
 
-    def __init__(self, name, description, products):
+    def __init__(self, name: str, description: str, products: list):
         self.name = name
         self.description = description
         self.products = set(products)
