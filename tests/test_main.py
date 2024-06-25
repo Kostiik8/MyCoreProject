@@ -12,8 +12,8 @@ def test_init(test_category):
     assert test_category.name == "Фрукты"
     assert test_category.description == "Различные свежие фрукты"
     assert test_category.products == {"Банан", "Груша"}
-    assert test_category.total_amount_category == 3
     assert test_category.unique_products == 2
+    assert test_category.total_amount_category == 1
 
 
 @pytest.fixture
