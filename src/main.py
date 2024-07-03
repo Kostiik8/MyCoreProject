@@ -49,7 +49,7 @@ class Product:
         return f"{self.name}, {self.price} руб. Остаток: {self.amount} шт."
 
     def __len__(self):
-        return self._amount
+        return len(str(self))
 
     @property
     def name(self):

@@ -79,5 +79,5 @@ def category(test_category):
 def test_create_category(category):
     assert category.name == "Арбуз"
     assert category.description == "ягода"
-    assert len(category) == 3
+    assert len(category) == 31
     assert str(category) == "Арбуз, 1000 руб. Остаток: 3 шт."
