@@ -10,9 +10,18 @@ class Category:
         self.unique_products = len(self.__products)
         Category.total_amount_category += 1
 
-    def add_product(self, products):
+    def __repr__(self):
+        return f"{self.__class__.__name__}{self.name}, {self.description}, {self.__products}, "
+
+    def __str__(self):
+        return f"{self.name}, количество продуктов: {len(self)} шт."
+
+    def __len__(self):
+        return sum(product.amount for product in self.__products)
+
+    def add_product(self, product):
         """Добавление продукта в категорию."""
-        self.__products.add(products)
+        self.__products.add(product)
         self.unique_products = len(self.__products)
 
     @property
@@ -27,11 +36,20 @@ class Category:
 class Product:
     """Класс для представления продукта"""
 
-    def __init__(self, name: str, description, price: float, amount: float):
+    def __init__(self, name: str, description, price: float, amount: int):
         self._name = name
         self.description = description
         self._price = price
         self._amount = amount
+
+    def __repr__(self):
+        return f"{self.__class__.__name__},{self.name}, {self.description}, {self.price}, {self.amount}"
+
+    def __str__(self):
+        return f"{self.name}, {self.price} руб. Остаток: {self.amount} шт."
+
+    def __len__(self):
+        return self._amount
 
     @property
     def name(self):
@@ -48,9 +66,13 @@ class Product:
         else:
             self._price = value
 
-    @price.deleter
-    def price(self):
-        del self._price
+    def __add__(self, other):
+        return Product(
+            f"{self.name} и {other.name}",
+            f"{self.description} и {other.description}",
+            self.price * self.amount + other.price * other.amount,
+            self.amount + other.amount,
+        )
 
     @property
     def amount(self):
@@ -76,9 +98,14 @@ class Product:
 product1 = Product("Банан", "фрукт", 15, 6)
 product2 = Product("Груша", "фрукты", 10, 5)
 product3 = Product("Яблоко", "фрукт", 20, 1)
+product4 = Product("Киви", "фрукт", 100, 10)
+product5 = Product("Личи", "фрукт", 150, 15)
 
+product6 = product4 + product5
+print(product6)
 category = Category("Фрукты", "Различные свежие фрукты", [product1, product2, product2])
-print(category.products)
 
 category.add_product(product3)
-print(category.products)
+print(category)
+for product in category.products:
+    print(product)

@@ -55,3 +55,29 @@ def test_init_2(test_product):
     assert test_product.description == "Фрукт"
     assert test_product.price == 15
     assert test_product.amount == 6
+
+
+@pytest.fixture
+def test_product_sum_rub(test_category):
+    product4 = Product("Арбуз", "ягода", 1000, 3)
+    product5 = Product("Дыня", "фрукт", 1500, 2)
+    combined_product = product4 + product5
+
+    assert combined_product.name == "Арбуз и Дыня"
+    assert combined_product.description == "ягода и фрукт"
+    assert combined_product.price == 1000 * 3 + 1500 * 2
+    assert combined_product.amount == 5
+    assert str(combined_product) == "Арбуз и Дыня, 6000 руб. Остаток: 5 шт."
+    assert len(combined_product.products) == 4
+
+
+@pytest.fixture
+def category(test_category):
+    return Product("Арбуз", "ягода", 1000, 3)
+
+
+def test_create_category(category):
+    assert category.name == "Арбуз"
+    assert category.description == "ягода"
+    assert len(category) == 3
+    assert str(category) == "Арбуз, 1000 руб. Остаток: 3 шт."
