@@ -1,6 +1,6 @@
 import pytest
 
-from src.main import Category, Product
+from src.main import Category, Product, SmartPhone, GrassLawn
 
 
 @pytest.fixture
@@ -17,14 +17,39 @@ def test_init(test_category):
     assert set(test_category.products) == {"Банан, 15 руб. Остаток: 6 шт.", "Груша, 10 руб. Остаток: 5 шт."}
 
 
-def test_add_product(test_category):
-    new_product = Product("Яблоко", "Фрукт", 50, 20)
+@pytest.mark.parametrize(
+    "new_product, expected_products",
+    [
+        (
+            Product("Яблоко", "Фрукт", 50, 20),
+            {
+                "Банан, 15 руб. Остаток: 6 шт.",
+                "Груша, 10 руб. Остаток: 5 шт.",
+                "Яблоко, 50 руб. Остаток: 20 шт.",
+            },
+        ),
+        (
+            SmartPhone("iphone", "телефон с ios системой", 10000, 10, 100, "XR", "128 GB", "Красный"),
+            {
+                "Банан, 15 руб. Остаток: 6 шт.",
+                "Груша, 10 руб. Остаток: 5 шт.",
+                "iphone, 10000 руб. Остаток: 10 шт.",
+            },
+        ),
+        (
+            GrassLawn("vivo", "трава из италии", 100, 30, "Италия", "10 дней", "Зеленая"),
+            {
+                "Банан, 15 руб. Остаток: 6 шт.",
+                "Груша, 10 руб. Остаток: 5 шт.",
+                "vivo, 100 руб. Остаток: 30 шт.",
+            },
+        ),
+    ],
+)
+def test_add_product(test_category, new_product, expected_products):
+    """Тест проверяет что не добавляются другие категории в категории продуктов"""
     test_category.add_product(new_product)
-    assert set(test_category.products) == {
-        "Банан, 15 руб. Остаток: 6 шт.",
-        "Груша, 10 руб. Остаток: 5 шт.",
-        "Яблоко, 50 руб. Остаток: 20 шт.",
-    }
+    assert set(test_category.products) == expected_products
 
 
 def test_set_price():
@@ -41,7 +66,7 @@ def test_set_amount():
 
 def test_class(test_category):
     assert test_category.unique_products == 2
-    assert Category.total_amount_category == 4
+    assert Category.total_amount_category == 6
 
 
 @pytest.fixture
@@ -81,3 +106,28 @@ def test_create_category(category):
     assert category.description == "ягода"
     assert len(category) == 31
     assert str(category) == "Арбуз, 1000 руб. Остаток: 3 шт."
+
+
+@pytest.fixture
+def test_news_category(test_category):
+    return SmartPhone("iphone", "телефон с ios системой", 10000, 10, 100, "XR", "128 GB", "Красный")
+
+
+def test_add_news(test_news_category):
+    assert test_news_category.name == "iphone"
+    assert test_news_category.description == "телефон с ios системой"
+    assert test_news_category.price == 10000
+    assert test_news_category.amount == 10
+    assert test_news_category.perfomance == 100
+    assert test_news_category.model == "XR"
+    assert test_news_category.memory == "128 GB"
+    assert test_news_category.color == "Красный"
+
+
+def test_add_different_types():
+    """Создаем экземпляр класса Product и экземпляр другого типа"""
+    product1 = Product("Шоколад", "Шоколадный батончик", 50, 5)
+    other_object = "some_string"
+
+    with pytest.raises(TypeError):
+        product1 + other_object

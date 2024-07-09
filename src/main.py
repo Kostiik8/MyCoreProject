@@ -20,9 +20,12 @@ class Category:
         return sum(product.amount for product in self.__products)
 
     def add_product(self, product):
-        """Добавление продукта в категорию."""
-        self.__products.add(product)
-        self.unique_products = len(self.__products)
+        """Добавление продукта в категорию, добавляет только наследников продукта"""
+        if isinstance(product, Product):
+            self.__products.add(product)
+            self.unique_products = len(self.__products)
+        else:
+            raise TypeError("Можно добавлять только экземпляры Product или его подклассы.")
 
     @property
     def products(self):
@@ -67,12 +70,15 @@ class Product:
             self._price = value
 
     def __add__(self, other):
-        return Product(
-            f"{self.name} и {other.name}",
-            f"{self.description} и {other.description}",
-            self.price * self.amount + other.price * other.amount,
-            self.amount + other.amount,
-        )
+        """Метод складывающий одинаковые классы продуктов"""
+        if isinstance(other, type(self)):
+            return Product(
+                f"{self.name} и {other.name}",
+                f"{self.description} и {other.description}",
+                self.price * self.amount + other.price * other.amount,
+                self.amount + other.amount,
+            )
+        raise TypeError("Невозможно добавить товар разных типов")
 
     @property
     def amount(self):
@@ -95,6 +101,27 @@ class Product:
         return cls(name, description, price, amount)
 
 
+class SmartPhone(Product):
+    """Родительский класс берущий основные параметры и добавляющий новые"""
+
+    def __init__(self, name, description, price, amount, perfomance, model, memory, color):
+        super().__init__(name, description, price, amount)
+        self.perfomance = perfomance
+        self.model = model
+        self.color = color
+        self.memory = memory
+
+
+class GrassLawn(Product):
+    """Родительский класс берущий основные параметры и добавляющий новые"""
+
+    def __init__(self, name, description, price, amount, country_made, period_height, color):
+        super().__init__(name, description, price, amount)
+        self.country_made = country_made
+        self.period_height = period_height
+        self.color = color
+
+
 product1 = Product("Банан", "фрукт", 15, 6)
 product2 = Product("Груша", "фрукты", 10, 5)
 product3 = Product("Яблоко", "фрукт", 20, 1)
@@ -109,3 +136,17 @@ category.add_product(product3)
 print(category)
 for product in category.products:
     print(product)
+phone = SmartPhone("iphone", "телефон с ios системой", 10000, 10, 100, "XR", "128 GB", "Красный")
+
+Grass = GrassLawn("vivo", "трава из италии", 100, 30, "Италия", "10 дней", "Зеленая")
+
+print(Grass)
+print(Grass.period_height)
+print(Grass.color)
+print(Grass.country_made)
+
+print(phone)
+print(phone.model)
+print(phone.memory)
+print(phone.perfomance)
+print(phone.color)
