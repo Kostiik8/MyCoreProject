@@ -21,9 +21,8 @@ class Category:
 
     def add_product(self, product):
         """Добавление продукта в категорию, добавляет только наследников продукта"""
-        if isinstance(product, Product):
+        if isinstance(product, Product) and issubclass(type(product), Product):
             self.__products.add(product)
-            self.unique_products = len(self.__products)
         else:
             raise TypeError("Можно добавлять только экземпляры Product или его подклассы.")
 
@@ -72,12 +71,7 @@ class Product:
     def __add__(self, other):
         """Метод складывающий одинаковые классы продуктов"""
         if isinstance(other, type(self)):
-            return Product(
-                f"{self.name} и {other.name}",
-                f"{self.description} и {other.description}",
-                self.price * self.amount + other.price * other.amount,
-                self.amount + other.amount,
-            )
+            return self.price * self.amount + other.price * other.amount
         raise TypeError("Невозможно добавить товар разных типов")
 
     @property
@@ -122,31 +116,33 @@ class GrassLawn(Product):
         self.color = color
 
 
-product1 = Product("Банан", "фрукт", 15, 6)
-product2 = Product("Груша", "фрукты", 10, 5)
-product3 = Product("Яблоко", "фрукт", 20, 1)
-product4 = Product("Киви", "фрукт", 100, 10)
-product5 = Product("Личи", "фрукт", 150, 15)
+if __name__ == "__main__":
+    product1 = Product("Банан", "фрукт", 15, 6)
+    product2 = Product("Груша", "фрукты", 10, 5)
+    product3 = Product("Яблоко", "фрукт", 20, 1)
+    product4 = Product("Киви", "фрукт", 100, 10)
+    product5 = Product("Личи", "фрукт", 150, 15)
 
-product6 = product4 + product5
-print(product6)
-category = Category("Фрукты", "Различные свежие фрукты", [product1, product2, product2])
+    product6 = product4 + product5
+    print(product6)
+    category = Category("Фрукты", "Различные свежие фрукты", [product1, product2, product2])
 
-category.add_product(product3)
-print(category)
-for product in category.products:
-    print(product)
-phone = SmartPhone("iphone", "телефон с ios системой", 10000, 10, 100, "XR", "128 GB", "Красный")
+    category.add_product(product3)
+    print(category)
+    for product in category.products:
+        print(product)
 
-Grass = GrassLawn("vivo", "трава из италии", 100, 30, "Италия", "10 дней", "Зеленая")
+    phone = SmartPhone("iphone", "телефон с ios системой", 10000, 10, 100, "XR", "128 GB", "Красный")
 
-print(Grass)
-print(Grass.period_height)
-print(Grass.color)
-print(Grass.country_made)
+    Grass = GrassLawn("vivo", "трава из италии", 100, 30, "Италия", "10 дней", "Зеленая")
 
-print(phone)
-print(phone.model)
-print(phone.memory)
-print(phone.perfomance)
-print(phone.color)
+    print(Grass)
+    print(Grass.period_height)
+    print(Grass.color)
+    print(Grass.country_made)
+
+    print(phone)
+    print(phone.model)
+    print(phone.memory)
+    print(phone.perfomance)
+    print(phone.color)

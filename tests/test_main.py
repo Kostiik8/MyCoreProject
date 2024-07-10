@@ -66,7 +66,7 @@ def test_set_amount():
 
 def test_class(test_category):
     assert test_category.unique_products == 2
-    assert Category.total_amount_category == 6
+    assert Category.total_amount_category == 5
 
 
 @pytest.fixture
