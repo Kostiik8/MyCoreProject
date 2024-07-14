@@ -1,4 +1,13 @@
-class Category:
+from abc import ABC, abstractmethod
+
+
+class LoggingMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(f"Создан объект {self.__class__.__name__}({repr(self)})")
+
+
+class Category(LoggingMixin):
     """Класс для представления категорий"""
 
     total_amount_category = 0
@@ -9,12 +18,13 @@ class Category:
         self.__products = set(products)
         self.unique_products = len(self.__products)
         Category.total_amount_category += 1
+        super().__init__()
 
     def __repr__(self):
         return f"{self.__class__.__name__}{self.name}, {self.description}, {self.__products}, "
 
     def __str__(self):
-        return f"{self.name}, количество продуктов: {len(self)} шт."
+        return f"'{self.name}', '{self.description}',{self.products}"
 
     def __len__(self):
         return sum(product.amount for product in self.__products)
@@ -35,7 +45,21 @@ class Category:
         return product_list
 
 
-class Product:
+class AllProducts(ABC):
+    @abstractmethod
+    def name(self):
+        pass
+
+    @abstractmethod
+    def price(self):
+        pass
+
+    @abstractmethod
+    def amount(self):
+        pass
+
+
+class Product(AllProducts, LoggingMixin):
     """Класс для представления продукта"""
 
     def __init__(self, name: str, description, price: float, amount: int):
@@ -43,12 +67,13 @@ class Product:
         self.description = description
         self._price = price
         self._amount = amount
+        super().__init__()
 
     def __repr__(self):
         return f"{self.__class__.__name__},{self.name}, {self.description}, {self.price}, {self.amount}"
 
     def __str__(self):
-        return f"{self.name}, {self.price} руб. Остаток: {self.amount} шт."
+        return f"'{self.name}', '{self.description}', {self.price}, {self.amount}"
 
     def __len__(self):
         return len(str(self))
@@ -95,25 +120,25 @@ class Product:
         return cls(name, description, price, amount)
 
 
-class SmartPhone(Product):
+class SmartPhone(Product, LoggingMixin):
     """Родительский класс берущий основные параметры и добавляющий новые"""
 
     def __init__(self, name, description, price, amount, perfomance, model, memory, color):
-        super().__init__(name, description, price, amount)
         self.perfomance = perfomance
         self.model = model
         self.color = color
         self.memory = memory
+        super().__init__(name, description, price, amount)
 
 
-class GrassLawn(Product):
+class GrassLawn(Product, LoggingMixin):
     """Родительский класс берущий основные параметры и добавляющий новые"""
 
     def __init__(self, name, description, price, amount, country_made, period_height, color):
-        super().__init__(name, description, price, amount)
         self.country_made = country_made
         self.period_height = period_height
         self.color = color
+        super().__init__(name, description, price, amount)
 
 
 if __name__ == "__main__":
@@ -136,13 +161,13 @@ if __name__ == "__main__":
 
     Grass = GrassLawn("vivo", "трава из италии", 100, 30, "Италия", "10 дней", "Зеленая")
 
-    print(Grass)
-    print(Grass.period_height)
-    print(Grass.color)
-    print(Grass.country_made)
+    # print(Grass)
+    # print(Grass.period_height)
+    # print(Grass.color)
+    # print(Grass.country_made)
 
-    print(phone)
-    print(phone.model)
-    print(phone.memory)
-    print(phone.perfomance)
-    print(phone.color)
+    # print(phone)
+    # print(phone.model)
+    # print(phone.memory)
+    # print(phone.perfomance)
+    # print(phone.color)
