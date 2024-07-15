@@ -36,6 +36,19 @@ class Category(LoggingMixin):
         else:
             raise TypeError("Можно добавлять только экземпляры Product или его подклассы.")
 
+        if product.amount <= 0:
+            raise ValueError("Колличество должно быть больше нуля")
+
+    def avg_prices(self):
+        """Метод подсчитывает средний ценник всех товаров """
+        if not self.__products:
+            return 0
+        try:
+            total_price = sum(product.price for product in self.__products)
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0
+
     @property
     def products(self):
         """Геттер для вывода списка товаров в заданном формате"""

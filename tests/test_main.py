@@ -131,3 +131,51 @@ def test_add_different_types():
 
     with pytest.raises(TypeError):
         product1 + other_object
+
+
+def test_add_zero_products():
+    product1 = Product("Банан", "фрукт", 15, 6)
+    product2 = Product("Груша", "фрукты", 10, 5)
+    product3 = Product("Яблоко", "фрукт", 20, 0)
+    category = Category("Фрукты", "Различные свежие фрукты", [product1, product2])
+
+    with pytest.raises(ValueError):
+        category.add_product(product3)
+
+
+def test_avg_price():
+    product1 = Product("Шоколад", "Плитка шоколада", 100, 5)
+    product2 = Product("Конфета", "Конфета карамель", 30, 10)
+    category = Category("Фрукты", "Различные свежие фрукты", [product1, product2])
+
+    category.add_product(product1)
+    category.add_product(product2)
+
+    average_price = category.avg_prices()
+    print(f"Средняя цена товаров в категории: {average_price}")
+
+
+def test_del_zero_avg():
+    product1 = Product("Шоколад", "шоколадка", 120, 7)
+    product2 = Product("Конфета", "Конфета карамель", 30, 10)
+    category = Category("Фрукты", "Различные свежие фрукты", [product1, product2])
+
+    category.add_product(product1)
+    category.add_product(product2)
+
+    average_price = category.avg_prices()
+    with pytest.raises(ZeroDivisionError):
+        assert average_price / 0
+
+
+def test_zero_product():
+    category = Category("Фрукты", "Различные свежие фрукты", [])
+    assert len(category.products) == 0
+
+
+def test_add_invalid_product_type():
+    product1 = Product("Шоколад", "Плитка шоколада", 100, 5)
+    product2 = Product("Конфета", "Конфета карамель", 30, 10)
+    category = Category("Фрукты", "Различные свежие фрукты", [product1, product2])
+    with pytest.raises(TypeError, match="Можно добавлять только экземпляры Product или его подклассы."):
+        category.add_product("не продукт")
